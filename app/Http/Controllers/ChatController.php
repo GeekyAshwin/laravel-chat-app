@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Message;
+
 
 class ChatController extends Controller
 {
@@ -13,7 +15,11 @@ class ChatController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('chat', compact('users'));
+        $messages = Message::where([
+            'sent_by' => 1,
+            'sent_to' => 2,
+        ])->get();
+        return view('chat', compact('users', 'messages'));
     }
 
     /**
