@@ -72,6 +72,7 @@
                         <div class="leading-none ml-1 text-xs">Active</div>
                     </div>
                 </div>
+                <input type="hidden" id="user_loggedin" name="user_loggedin" value="{{ session('user_loggedin') }}">
                 <div class="flex flex-col mt-8">
                     <div class="flex flex-row items-center justify-between text-xs">
                         <span class="font-bold">Active Conversations</span>
@@ -173,6 +174,9 @@
             </div>
         </div>
     </div>
+    {{-- @if (session('user_loggedin')) --}}
+        @include('login-modal')
+    {{-- @endif --}}
 </body>
 
 </html>
@@ -184,6 +188,7 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
 
     // Submit Data
     $('#send-message').click(function(e) {

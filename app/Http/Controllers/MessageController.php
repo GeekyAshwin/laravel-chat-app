@@ -31,9 +31,10 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         try {
+            dd(session()->all());
             $message = Message::create([
                 'sent_to' => 2,
-                'sent_by' => 1,
+                'sent_by' => session('user_id'),   //login user  id
                 'message' => $request->input('message'),
                 'has_attachment' => false
             ]);
