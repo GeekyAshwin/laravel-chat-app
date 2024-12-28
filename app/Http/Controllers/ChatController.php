@@ -16,11 +16,11 @@ class ChatController extends Controller
     {
         $users = User::whereNot('id', session('user_id'))->get();
         $messages = Message::where([
-            'sent_by' => 1,
-            'sent_to' => 2,
+            ['sent_by', '=', session('user_id')],
+            ['sent_to', '=', $users[0]->id],
         ])->orWhere([
-            'sent_by' => 2,
-            'sent_to' => 1,
+            ['sent_by', '=', $users[0]->id],
+            ['sent_to', '=', session('user_id'),],
         ])->get();
         return view('chat', compact('users', 'messages'));
     }

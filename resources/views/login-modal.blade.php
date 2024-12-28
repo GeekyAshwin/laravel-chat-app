@@ -60,6 +60,7 @@
             },
             success: function(response) {
                 $("#loginModal").addClass("hidden");
+                window.location.reload();
             },
             error: function(error) {
                 console.error(error);

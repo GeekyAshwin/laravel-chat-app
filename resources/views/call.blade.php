@@ -5,7 +5,7 @@
       <!-- Header -->
       <div class="px-6 py-4 border-b border-gray-200 text-center">
         <h2 id="callingStatus" class="text-lg font-semibold text-gray-800">Calling...</h2>
-        <p class="text-sm text-gray-600 mt-1">Username: <span class="font-semibold">John Doe</span></p>
+        <p class="text-sm text-gray-600 mt-1">Username: <span id="callSender" class="font-semibold"></span></p>
       </div>
       <!-- Body -->
       <div class="flex flex-col items-center justify-center px-6 py-8">

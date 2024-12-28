@@ -16,11 +16,11 @@ class MessageController extends Controller
     {
         $receiver = $request->input('receiver');
         $messages = Message::where([
-            'sent_by' => session('user_id'),
-            'sent_to' => $receiver,
+            ['sent_by', '=', session('user_id')],
+            ['sent_to', '=', $receiver],
         ])->orWhere([
-            'sent_by' => $receiver,
-            'sent_to' => session('user_id'),
+            ['sent_by', '=', $receiver],
+            ['sent_to', '=', session('user_id'),],
         ])->get();
         return response()->json([
             'data' => $messages
@@ -43,7 +43,7 @@ class MessageController extends Controller
         try {
             // dd(session()->all());
             $message = Message::create([
-                'sent_to' => 2,
+                'sent_to' => $request->input('receiver'),
                 'sent_by' => session('user_id'),   //login user  id
                 'message' => $request->input('message'),
                 'has_attachment' => false

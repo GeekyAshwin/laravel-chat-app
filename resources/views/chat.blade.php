@@ -12,6 +12,7 @@
     <script src="{{ url('/js/script.js') }}"></script>
     {{-- <input type="hidden" name="sent_by" > --}}
     <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
+    <input type="hidden" id="username" name="username" value="{{ session('username') }}">
     <input type="hidden" id="call_id" name="call_id">
 
 
@@ -106,7 +107,7 @@
                             </path>
                         </svg>
                     </div>
-                    <div class="ml-2 font-bold text-2xl">QuickChat</div>
+                    <div class="ml-2 font-bold text-2xl">MyChattingApp</div>
                 </div>
                 <div
                     class="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg">
@@ -124,11 +125,12 @@
                         </button>
 
                     </div>
-                    <input type="hidden" id="inviteLink" value="{{ url('/invite-link') . '/' . session('chat_code') }}">
+                    <input type="hidden" id="inviteLink"
+                        value="{{ url('/invite-link') . '/' . session('chat_code') }}">
                     <button id="invite"
-                    class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
-                    <span>Copy Invite Link</span>
-                </button>
+                        class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                        <span>Copy Invite Link</span>
+                    </button>
                 </div>
                 <input type="hidden" id="user_loggedin" name="user_loggedin" value="{{ session('user_loggedin') }}">
 
@@ -141,6 +143,7 @@
 
                         @foreach ($users as $user)
                             <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}"
+                                data-username="{{ $user->name }}"
                                 class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                                 <div class="flex items-center justify-center h-8 w-8 bg-pink-200 rounded-full">
                                     {{ substr($user->name, 0, 1) }}
@@ -156,9 +159,11 @@
             <div class="flex flex-col flex-auto h-full p-6">
                 <div class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
                     <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-                        <div>
-                            Username
+                        <div id="chatUserName">
+                            {{ $users[0]->name }}
+                            {{-- <input type="hidden" id="receiver" value={{ $users[0]->id }}> --}}
                         </div>
+                        <input type="hidden" id="receiver" value={{ $users[0]->id }}>
                         <div class="flex-grow ml-4">
                             <div id="make-call" style="cursor: pointer;"
                                 class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
@@ -170,7 +175,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex flex-col h-full overflow-x-auto mb-4">
+                    <div id="chatBoxArea" class="flex flex-col h-full overflow-x-auto mb-4">
                         <div class="flex flex-col h-full">
                             <div id="chat-row" class="grid grid-cols-12 gap-y-2">
                                 @foreach ($messages as $message)
@@ -210,6 +215,7 @@
                             </div>
                         </div>
                         <div class="ml-4">
+                            <input type="hidden" id="chatUserId">
                             <button id="send-message"
                                 class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
                                 <span>Send</span>
@@ -268,13 +274,16 @@
     // Submit Data
     $('#send-message').click(function(e) {
         e.preventDefault(); // Prevent default form submission
-
+        $("#chatUserId").val($("#receiver").val())
         let message = $("#message").val();
+        let chatUserId = $("#chatUserId").val();
+        console.log(chatUserId);
         $.ajax({
             url: '{{ route('message.store') }}',
             type: 'POST',
             data: {
-                message: message
+                message: message,
+                receiver: chatUserId
             },
             success: function(response) {
                 console.log(response.data.message);
@@ -291,18 +300,23 @@
     $('#make-call').click(function(e) {
         $('#callModal').removeClass('hidden');
         $('#receiveCall').addClass('hidden');
-
+        $("#chatUserId").val($("#receiver").val())
+        let chatUserId = $("#chatUserId").val();
+        console.log(chatUserId);
         console.log('called')
         $.ajax({
             url: '{{ route('make-call') }}',
             type: 'POST',
             data: {
                 sender: loggedInUserId,
-                receiver: 2 // TODO: hardcoded
+                receiver: chatUserId // TODO: hardcoded
             },
             success: function(response) {
-                console.log(response);
-                makeCall();
+                console.log(response.data);
+                if (response.data.sender == loggedInUserId || response.data.receiver ==
+                    loggedInUserId) {
+                    makeCall();
+                }
                 $("#call_id").val(response.data.id);
             },
             error: function(error) {
@@ -312,8 +326,8 @@
         });
     });
 
-     // Logout
-     $('#logout').click(function(e) {
+    // Logout
+    $('#logout').click(function(e) {
         $.ajax({
             url: '{{ route('logout') }}',
             type: 'POST',
@@ -321,6 +335,7 @@
             success: function(response) {
                 console.log(response);
                 $("#logout").addClass('hidden');
+                window.location.reload();
             },
             error: function(error) {
                 console.error(error);
@@ -329,7 +344,67 @@
         });
     });
 
-    $("#invite").click(function (e) {
-        navigator.clipboard.writeText($("#inviteLink").val()) ;
+    $("#invite").click(function(e) {
+        navigator.clipboard.writeText($("#inviteLink").val());
+    });
+
+    $(".user-chat").click(function(e) {
+        var userId = $(this).data(
+            "receiver"); // Alternatively, $(this).attr("id").split("_")[1] to extract the numeric part
+        var chatUserName = $(this).data("username");
+        $("#chatUserName").text(chatUserName)
+        $("#receiver").val(userId);
+        $.ajax({
+            url: '{{ route('loadMessages') }}',
+            type: 'GET',
+            data: {
+                receiver: userId
+            },
+            success: function(response) {
+                var chatRow = $("#chat-row");
+                chatRow.empty(); // Clear the existing messages
+
+                // Populate the new messages
+                response.data.forEach(function(message) {
+                    console.log(message)
+                    if (message.sent_by == loggedInUserId) {
+                        // Add sent message
+                        chatRow.append(`
+                        <div class="col-start-6 col-end-13 p-3 rounded-lg">
+    <div class="flex items-center justify-start flex-row-reverse">
+        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+            A
+        </div>
+        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+            <div>` + message.message + `</div>
+        </div>
+    </div>
+</div>
+                    `);
+                    } else {
+                        // Add received message
+                        chatRow.append(`
+                        <div class="col-start-1 col-end-8 p-3 rounded-lg">
+                                    <div class="flex flex-row items-center">
+                                        <div
+                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                            A
+                                        </div>
+                                        <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                            <div>` + message.message + `</div>
+                                        </div>
+                                    </div>
+                                </div>
+                    `);
+                    }
+                });
+
+            },
+            error: function(error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+        // console.log(userId)
     });
 </script>
