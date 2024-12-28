@@ -14,7 +14,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::whereNot('id', session('user_id'))->get();
         $messages = Message::where([
             'sent_by' => 1,
             'sent_to' => 2,

@@ -1,0 +1,4 @@
+copy invite link will generate a invite link  and add entry in tablet
+creare invite route
+when route is call
+i will add new entry of new verified_user

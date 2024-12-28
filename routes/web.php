@@ -30,3 +30,5 @@ Route::post('make-call', [CallController::class, 'makeCall'])->name('make-call')
 Route::post('accept-call', [CallController::class, 'acceptCall'])->name('accept-call');
 Route::post('reject-call', [CallController::class, 'rejectCall'])->name('reject-call');
 Route::post('end-call', [CallController::class, 'endCall'])->name('end-call');
+Route::post('logout', [UserController::class, 'logout'])->name('logout');
+Route::get('invite-link/{chat_code}', [UserController::class, 'showChatPage']);

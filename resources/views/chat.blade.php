@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="{{ url('/js/script.js') }}"></script>
     {{-- <input type="hidden" name="sent_by" > --}}
     <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
     <input type="hidden" id="call_id" name="call_id">
@@ -62,7 +63,7 @@
 
         var callChannel = pusher.subscribe('call');
         // Listen for call initiated created
-        callChannel.bind('call-initiated', function (data) {
+        callChannel.bind('call-initiated', function(data) {
             console.log(data.call)
             $('#callModal').removeClass('hidden');
             $("#call_id").val(data.call.id);
@@ -71,20 +72,20 @@
         });
 
         // Listen for call ended
-        callChannel.bind('call-ended', function (data) {
+        callChannel.bind('call-ended', function(data) {
             console.log(data)
             console.log($('#callModal').length); // Should log 1 if the element exists
         });
 
         // Listen for call rejected
-        callChannel.bind('call-rejected', function (data) {
+        callChannel.bind('call-rejected', function(data) {
             console.log(data)
             $("#callModal").addClass("hidden");
             $("#callingStatus").text('Connecting....');
         });
 
         // Listen for call accepted
-        callChannel.bind('call-accepted', function (data) {
+        callChannel.bind('call-accepted', function(data) {
             console.log(data)
             $("#callingStatus").text('Connected');
         });
@@ -93,6 +94,7 @@
 
 <body>
     <div class="flex h-screen antialiased text-gray-800">
+        <audio id="audioPlayer" class="mt-4 w-full hidden" controls></audio>
         <div class="flex flex-row h-full w-full overflow-x-hidden">
             <div class="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
                 <div class="flex flex-row items-center justify-center h-12 w-full">
@@ -115,11 +117,18 @@
                     <div class="text-sm font-semibold mt-2">{{ session('username') }}</div>
                     <div class="text-xs text-gray-500">Lead UI/UX Designer</div>
                     <div class="flex flex-row items-center mt-3">
-                        <div class="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
-                            <div class="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
-                        </div>
-                        <div class="leading-none ml-1 text-xs">Active</div>
+
+                        <button id="logout"
+                            class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                            <span>Logout</span>
+                        </button>
+
                     </div>
+                    <input type="hidden" id="inviteLink" value="{{ url('/invite-link') . '/' . session('chat_code') }}">
+                    <button id="invite"
+                    class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                    <span>Copy Invite Link</span>
+                </button>
                 </div>
                 <input type="hidden" id="user_loggedin" name="user_loggedin" value="{{ session('user_loggedin') }}">
 
@@ -131,7 +140,8 @@
                     <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
 
                         @foreach ($users as $user)
-                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}" class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}"
+                                class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                                 <div class="flex items-center justify-center h-8 w-8 bg-pink-200 rounded-full">
                                     {{ substr($user->name, 0, 1) }}
                                 </div>
@@ -150,22 +160,14 @@
                             Username
                         </div>
                         <div class="flex-grow ml-4">
-                            <div id="make-call" style="cursor: pointer;" class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="2"
-                                  stroke="white"
-                                  class="w-4 h-4"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M3 10.75V6.5A2.5 2.5 0 015.5 4h3.25a2.5 2.5 0 012.5 2.5v.916c0 .648-.426 1.25-1.063 1.496l-1.066.428a11.05 11.05 0 005.558 5.558l.428-1.066a1.5 1.5 0 011.496-1.063H17.5A2.5 2.5 0 0120 15.25v3.25a2.5 2.5 0 01-2.5 2.5h-4.25C5.603 21 3 15.879 3 10.75z"
-                                  />
+                            <div id="make-call" style="cursor: pointer;"
+                                class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="white" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 10.75V6.5A2.5 2.5 0 015.5 4h3.25a2.5 2.5 0 012.5 2.5v.916c0 .648-.426 1.25-1.063 1.496l-1.066.428a11.05 11.05 0 005.558 5.558l.428-1.066a1.5 1.5 0 011.496-1.063H17.5A2.5 2.5 0 0120 15.25v3.25a2.5 2.5 0 01-2.5 2.5h-4.25C5.603 21 3 15.879 3 10.75z" />
                                 </svg>
-                              </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex flex-col h-full overflow-x-auto mb-4">
@@ -212,8 +214,8 @@
                                 class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
                                 <span>Send</span>
                                 <span class="ml-2">
-                                    <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                     </svg>
@@ -244,7 +246,7 @@
     // Load chats of user
     // const loggedInUserId = document.getElementById("user_id").value;
     const userElement = "#user_" + loggedInUserId;
-    $(userElement).click(function (e) {
+    $(userElement).click(function(e) {
         $.ajax({
             url: '{{ route('loadMessages') }}',
             type: 'GET',
@@ -257,7 +259,7 @@
             },
             error: function(error) {
                 console.error(error);
-                alert('An error occurred');
+                alert(error);
             }
         });
 
@@ -280,13 +282,13 @@
             },
             error: function(error) {
                 console.error(error);
-                alert('An error occurred');
+                alert(error);
             }
         });
     });
 
     // Make a call
-    $('#make-call').click(function (e) {
+    $('#make-call').click(function(e) {
         $('#callModal').removeClass('hidden');
         $('#receiveCall').addClass('hidden');
 
@@ -300,12 +302,34 @@
             },
             success: function(response) {
                 console.log(response);
+                makeCall();
                 $("#call_id").val(response.data.id);
             },
             error: function(error) {
                 console.error(error);
-                alert('An error occurred');
+                alert(error);
             }
         });
+    });
+
+     // Logout
+     $('#logout').click(function(e) {
+        $.ajax({
+            url: '{{ route('logout') }}',
+            type: 'POST',
+
+            success: function(response) {
+                console.log(response);
+                $("#logout").addClass('hidden');
+            },
+            error: function(error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+    });
+
+    $("#invite").click(function (e) {
+        navigator.clipboard.writeText($("#inviteLink").val()) ;
     });
 </script>

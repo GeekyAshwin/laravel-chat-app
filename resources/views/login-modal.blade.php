@@ -63,7 +63,6 @@
             },
             error: function(error) {
                 console.error(error);
-                alert('An error occurred');
             }
         });
     });
