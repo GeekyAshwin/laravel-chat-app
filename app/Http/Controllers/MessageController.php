@@ -12,9 +12,19 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function loadMessages(Request $request)
     {
-        //
+        $receiver = $request->input('receiver');
+        $messages = Message::where([
+            'sent_by' => session('user_id'),
+            'sent_to' => $receiver,
+        ])->orWhere([
+            'sent_by' => $receiver,
+            'sent_to' => session('user_id'),
+        ])->get();
+        return response()->json([
+            'data' => $messages
+        ]);
     }
 
     /**

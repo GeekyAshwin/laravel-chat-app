@@ -22,3 +22,4 @@ use App\Http\Controllers\UserController;
 Route::get('/', [ChatController::class, 'index']);
 Route::post('login', [UserController::class, 'login'])->name('login');
 Route::resource('/message', 'App\Http\Controllers\MessageController');
+Route::get('/user-messages', [MessageController::class, 'loadMessages'])->name('loadMessages');

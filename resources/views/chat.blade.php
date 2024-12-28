@@ -99,7 +99,7 @@
                     <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
 
                         @foreach ($users as $user)
-                            <button class="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}" class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                                 <div class="flex items-center justify-center h-8 w-8 bg-pink-200 rounded-full">
                                     {{ substr($user->name, 0, 1) }}
                                 </div>
@@ -113,6 +113,16 @@
             </div>
             <div class="flex flex-col flex-auto h-full p-6">
                 <div class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
+                    <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+                        <div>
+                            Username
+                        </div>
+                        <div class="flex-grow ml-4">
+                            <div class="relative w-full">
+                                <button class="btn">Call</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex flex-col h-full overflow-x-auto mb-4">
                         <div class="flex flex-col h-full">
                             <div id="chat-row" class="grid grid-cols-12 gap-y-2">
@@ -185,6 +195,27 @@
         }
     });
 
+    // Load chats of user
+    const loggedInUserId = document.getElementById("user_id").value;
+    const userElement = "#user_" + loggedInUserId;
+    $(userElement).click(function (e) {
+        $.ajax({
+            url: '{{ route('loadMessages') }}',
+            type: 'GET',
+            data: {
+                receiver: message
+            },
+            success: function(response) {
+                console.log(response.data.message);
+                $("#message").val('');
+            },
+            error: function(error) {
+                console.error(error);
+                alert('An error occurred');
+            }
+        });
+
+    });
 
     // Submit Data
     $('#send-message').click(function(e) {
