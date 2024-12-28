@@ -4,15 +4,12 @@
     <div class="bg-white rounded-lg shadow-lg w-96">
       <!-- Header -->
       <div class="px-6 py-4 border-b border-gray-200 text-center">
-        <h2 class="text-lg font-semibold text-gray-800">Calling...</h2>
+        <h2 id="callingStatus" class="text-lg font-semibold text-gray-800">Calling...</h2>
         <p class="text-sm text-gray-600 mt-1">Username: <span class="font-semibold">John Doe</span></p>
       </div>
       <!-- Body -->
       <div class="flex flex-col items-center justify-center px-6 py-8">
-        <div class="mb-6">
-          <p class="text-lg font-medium text-gray-800">Connecting...</p>
-          <p class="text-gray-500 text-sm">Please wait while the call connects.</p>
-        </div>
+
         <div class="flex justify-center gap-6">
           <!-- End Call Button -->
           <button
@@ -25,6 +22,7 @@
             </svg>
           </button>
           <!-- Receive Call Button -->
+
           <button
             id="receiveCall"
             class="bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg focus:outline-none"
@@ -60,19 +58,38 @@
 
 
     $("#endCall").click(function (e) {
-        $("#callModal").addClass("hidden");
-    });
+        let callId = $("#call_id").val();
 
-    $("#login").click(function (e) {
-        let loginCode = $("#loginCode").val();
         $.ajax({
-            url: '{{ route('login') }}',
+            url: '{{ route('reject-call') }}',
             type: 'POST',
             data: {
-                login_code: loginCode
+                call: callId
+            },
+            success: function(response) {
+                $("#callModal").addClass("hidden");
+                $("#callingStatus").text('Connecting....');
+            },
+            error: function(error) {
+                console.error(error);
+                alert('An error occurred');
+            }
+        });
+    });
+
+    $("#receiveCall").click(function (e) {
+        let loginCode = $("#loginCode").val();
+        let callId = $("#call_id").val();
+
+        $.ajax({
+            url: '{{ route('accept-call') }}',
+            type: 'POST',
+            data: {
+                call: callId
             },
             success: function(response) {
                 $("#loginModal").addClass("hidden");
+                $("#callingStatus").text('Connected');
             },
             error: function(error) {
                 console.error(error);

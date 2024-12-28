@@ -11,6 +11,8 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     {{-- <input type="hidden" name="sent_by" > --}}
     <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
+    <input type="hidden" id="call_id" name="call_id">
+
 
     <script>
         // Enable pusher logging - don't include this in production
@@ -61,26 +63,30 @@
         var callChannel = pusher.subscribe('call');
         // Listen for call initiated created
         callChannel.bind('call-initiated', function (data) {
-            console.log(data)
-            alert(data);
+            console.log(data.call)
+            $('#callModal').removeClass('hidden');
+            $("#call_id").val(data.call.id);
+            console.log($('#callModal').length); // Should log 1 if the element exists
+
         });
 
         // Listen for call ended
         callChannel.bind('call-ended', function (data) {
             console.log(data)
-            alert(data);
+            console.log($('#callModal').length); // Should log 1 if the element exists
         });
 
         // Listen for call rejected
         callChannel.bind('call-rejected', function (data) {
             console.log(data)
-            alert(data);
+            $("#callModal").addClass("hidden");
+            $("#callingStatus").text('Connecting....');
         });
 
         // Listen for call accepted
         callChannel.bind('call-accepted', function (data) {
             console.log(data)
-            alert(data);
+            $("#callingStatus").text('Connected');
         });
     </script>
 </head>
@@ -222,7 +228,7 @@
     @if (!session('user_loggedin'))
         @include('login-modal')
     @endif
-    @include('call')
+    @include('call', ['sender_id' => session('user_id')])
 </body>
 
 </html>
@@ -282,6 +288,8 @@
     // Make a call
     $('#make-call').click(function (e) {
         $('#callModal').removeClass('hidden');
+        $('#receiveCall').addClass('hidden');
+
         console.log('called')
         $.ajax({
             url: '{{ route('make-call') }}',
@@ -292,7 +300,7 @@
             },
             success: function(response) {
                 console.log(response);
-                // $("#message").val('');
+                $("#call_id").val(response.data.id);
             },
             error: function(error) {
                 console.error(error);

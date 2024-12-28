@@ -31,10 +31,11 @@ class CallController extends Controller
         }
     }
 
-    public function acceptCall(Call $call)
+    public function acceptCall(Request $request)
     {
         try {
-            $call->updateCallStatus($call, 'Accepted');
+            $call = $this->getCallById($request->input('call'));
+            $this->updateCallStatus($call, 'Accepted');
             event(new CallAccepted($call));
 
             return response()->json([
@@ -47,10 +48,11 @@ class CallController extends Controller
         }
     }
 
-    public function rejectCall(Call $call)
+    public function rejectCall(Request $request)
     {
         try {
-            $call->updateCallStatus($call, 'Rejected');
+            $call = $this->getCallById($request->input('call'));
+            $this->updateCallStatus($call, 'Rejected');
             event(new CallRejected($call));
 
             return response()->json([
@@ -63,10 +65,11 @@ class CallController extends Controller
         }
     }
 
-    public function endCall(Call $call)
+    public function endCall(Request $request)
     {
         try {
-            $call->updateCallStatus($call, 'Ended');
+            $call = $this->getCallById($request->input('call'));
+            $this->updateCallStatus($call, 'Ended');
             event(new CallEnded($call));
 
             return response()->json([
@@ -94,5 +97,10 @@ class CallController extends Controller
         } catch (\Throwable $exception) {
             dd($exception);
         }
+    }
+
+    public function getCallById($callId)
+    {
+        return Call::whereId($callId)->first();
     }
 }
