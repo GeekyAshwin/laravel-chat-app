@@ -18,6 +18,9 @@ class ChatController extends Controller
         $messages = Message::where([
             'sent_by' => 1,
             'sent_to' => 2,
+        ])->orWhere([
+            'sent_by' => 2,
+            'sent_to' => 1,
         ])->get();
         return view('chat', compact('users', 'messages'));
     }

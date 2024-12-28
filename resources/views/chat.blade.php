@@ -10,6 +10,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     {{-- <input type="hidden" name="sent_by" > --}}
+    <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
+
     <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
@@ -18,13 +20,12 @@
             cluster: 'ap2',
         });
 
-        const loggedInUserId = 1;
-
+        const loggedInUserId = document.getElementById("user_id").value;
         var channel = pusher.subscribe('public');
         channel.bind('chat', function(data) {
             console.log(JSON.parse(data.message).message);
             const message = JSON.parse(data.message).message;
-            const html = `<div class="col-start-1 col-end-8 p-3 rounded-lg">
+            const receivedHtml = `<div class="col-start-1 col-end-8 p-3 rounded-lg">
                                     <div class="flex flex-row items-center">
                                         <div
                                             class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
@@ -35,7 +36,23 @@
                                         </div>
                                     </div>
                                 </div>`
-            $('#chat-row').append(html);
+            const sentHtml = `<div class="col-start-6 col-end-13 p-3 rounded-lg">
+    <div class="flex items-center justify-start flex-row-reverse">
+        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+            A
+        </div>
+        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+            <div>` + message + `</div>
+        </div>
+    </div>
+</div>`;
+            if (JSON.parse(data.message).sent_by == loggedInUserId) {
+                $('#chat-row').append(sentHtml);
+            } else {
+                $('#chat-row').append(receivedHtml);
+                console.log('revied html printed')
+            }
+
 
 
         });
@@ -63,7 +80,7 @@
                         <img src="https://avatars3.githubusercontent.com/u/2763884?s=128" alt="Avatar"
                             class="h-full w-full" />
                     </div>
-                    <div class="text-sm font-semibold mt-2">{{ $users[0]->name }}</div>
+                    <div class="text-sm font-semibold mt-2">{{ session('username') }}</div>
                     <div class="text-xs text-gray-500">Lead UI/UX Designer</div>
                     <div class="flex flex-row items-center mt-3">
                         <div class="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
@@ -73,6 +90,7 @@
                     </div>
                 </div>
                 <input type="hidden" id="user_loggedin" name="user_loggedin" value="{{ session('user_loggedin') }}">
+
                 <div class="flex flex-col mt-8">
                     <div class="flex flex-row items-center justify-between text-xs">
                         <span class="font-bold">Active Conversations</span>
@@ -98,35 +116,13 @@
                     <div class="flex flex-col h-full overflow-x-auto mb-4">
                         <div class="flex flex-col h-full">
                             <div id="chat-row" class="grid grid-cols-12 gap-y-2">
-
                                 @foreach ($messages as $message)
-                                    <div class="col-start-1 col-end-8 p-3 rounded-lg">
-                                        <div class="flex flex-row items-center">
-                                            <div
-                                                class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                                A
-                                            </div>
-                                            <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                <div>{{ $message->message }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @if ($message->sent_by === session('user_id'))
+                                        @include('message.sent', ['message' => $message->message])
+                                    @else
+                                        @include('message.received', ['message' => $message->message])
+                                    @endif
                                 @endforeach
-
-
-                                {{-- <div class="col-start-6 col-end-13 p-3 rounded-lg">
-                                    <div class="flex items-center justify-start flex-row-reverse">
-                                        <div
-                                            class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                            A
-                                        </div>
-                                        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                                            <div>I'm ok what about you?</div>
-                                        </div>
-                                    </div>
-                                </div> --}}
-
-
                             </div>
                         </div>
                     </div>
@@ -174,9 +170,9 @@
             </div>
         </div>
     </div>
-    {{-- @if (session('user_loggedin')) --}}
+    @if (!session('user_loggedin'))
         @include('login-modal')
-    {{-- @endif --}}
+    @endif
 </body>
 
 </html>

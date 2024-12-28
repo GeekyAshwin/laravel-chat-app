@@ -31,7 +31,7 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         try {
-            dd(session()->all());
+            // dd(session()->all());
             $message = Message::create([
                 'sent_to' => 2,
                 'sent_by' => session('user_id'),   //login user  id

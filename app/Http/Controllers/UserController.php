@@ -18,7 +18,7 @@ class UserController extends Controller
             ], 422);
         } else {
             session(['user_id' => $user->id]);
-            session(['username' => $user->username]);
+            session(['username' => $user->name]);
             session(['email' => $user->email]);
             session(['user_loggedin' => true]);
 
