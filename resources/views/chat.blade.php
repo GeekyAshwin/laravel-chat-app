@@ -118,9 +118,22 @@
                             Username
                         </div>
                         <div class="flex-grow ml-4">
-                            <div class="relative w-full">
-                                <button class="btn">Call</button>
-                            </div>
+                            <div id="make-call" style="cursor: pointer;" class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="2"
+                                  stroke="white"
+                                  class="w-4 h-4"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M3 10.75V6.5A2.5 2.5 0 015.5 4h3.25a2.5 2.5 0 012.5 2.5v.916c0 .648-.426 1.25-1.063 1.496l-1.066.428a11.05 11.05 0 005.558 5.558l.428-1.066a1.5 1.5 0 011.496-1.063H17.5A2.5 2.5 0 0120 15.25v3.25a2.5 2.5 0 01-2.5 2.5h-4.25C5.603 21 3 15.879 3 10.75z"
+                                  />
+                                </svg>
+                              </div>
                         </div>
                     </div>
                     <div class="flex flex-col h-full overflow-x-auto mb-4">
