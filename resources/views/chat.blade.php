@@ -56,6 +56,32 @@
 
 
         });
+
+
+        var callChannel = pusher.subscribe('call');
+        // Listen for call initiated created
+        callChannel.bind('call-initiated', function (data) {
+            console.log(data)
+            alert(data);
+        });
+
+        // Listen for call ended
+        callChannel.bind('call-ended', function (data) {
+            console.log(data)
+            alert(data);
+        });
+
+        // Listen for call rejected
+        callChannel.bind('call-rejected', function (data) {
+            console.log(data)
+            alert(data);
+        });
+
+        // Listen for call accepted
+        callChannel.bind('call-accepted', function (data) {
+            console.log(data)
+            alert(data);
+        });
     </script>
 </head>
 
