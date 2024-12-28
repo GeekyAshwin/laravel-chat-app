@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sender')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('receiver')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('status', ['Accepted', 'Rejected', 'Completed', 'Ended']);
+            $table->enum('status', ['Accepted', 'Rejected', 'Initiated', 'Ended']);
             $table->timestamps();
         });
     }

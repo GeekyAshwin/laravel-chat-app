@@ -222,6 +222,7 @@
     @if (!session('user_loggedin'))
         @include('login-modal')
     @endif
+    @include('call')
 </body>
 
 </html>
@@ -235,7 +236,7 @@
     });
 
     // Load chats of user
-    const loggedInUserId = document.getElementById("user_id").value;
+    // const loggedInUserId = document.getElementById("user_id").value;
     const userElement = "#user_" + loggedInUserId;
     $(userElement).click(function (e) {
         $.ajax({
@@ -270,6 +271,28 @@
             success: function(response) {
                 console.log(response.data.message);
                 $("#message").val('');
+            },
+            error: function(error) {
+                console.error(error);
+                alert('An error occurred');
+            }
+        });
+    });
+
+    // Make a call
+    $('#make-call').click(function (e) {
+        $('#callModal').removeClass('hidden');
+        console.log('called')
+        $.ajax({
+            url: '{{ route('make-call') }}',
+            type: 'POST',
+            data: {
+                sender: loggedInUserId,
+                receiver: 2 // TODO: hardcoded
+            },
+            success: function(response) {
+                console.log(response);
+                // $("#message").val('');
             },
             error: function(error) {
                 console.error(error);

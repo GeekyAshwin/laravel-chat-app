@@ -16,8 +16,8 @@ class CallController extends Controller
         try {
             $call = Call::create([
                 'sender' => $request->input('sender'),
-                'receiver' => $request->input('sender'),
-                'sender' => $request->input('sender'),
+                'receiver' => $request->input('receiver'),
+                'status' => 'Initiated',
             ]);
             event(new CallInitiated($call));
 
