@@ -22,6 +22,7 @@
 
         var pusher = new Pusher('f5fa53d5e2af981c1678', {
             cluster: 'ap2',
+            userTls: true,
         });
 
         const loggedInUserId = document.getElementById("user_id").value;
@@ -51,7 +52,7 @@
     </div>
 </div>`;
             if (JSON.parse(data.message).sent_by == loggedInUserId) {
-                $('#chat-row').append(sentHtml);
+                // $('#chat-row').append(sentHtml);
             } else {
                 $('#chat-row').append(receivedHtml);
                 console.log('revied html printed')
@@ -276,6 +277,20 @@
         e.preventDefault(); // Prevent default form submission
         $("#chatUserId").val($("#receiver").val())
         let message = $("#message").val();
+        $("#message").val(''); //clearing input box
+        const sentHtml = `<div class="col-start-6 col-end-13 p-3 rounded-lg">
+    <div class="flex items-center justify-start flex-row-reverse">
+        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+            A
+        </div>
+        <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+            <div>` + message + `</div>
+        </div>
+    </div>
+</div>`;
+            // if (JSON.parse(data.message).sent_by == loggedInUserId) {
+                $('#chat-row').append(sentHtml);
+            // }
         let chatUserId = $("#chatUserId").val();
         console.log(chatUserId);
         $.ajax({
