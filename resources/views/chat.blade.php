@@ -14,9 +14,52 @@
     <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
     <input type="hidden" id="username" name="username" value="{{ session('username') }}">
     <input type="hidden" id="call_id" name="call_id">
+    <input type="hidden" name="peerId" id="peerId">
+    <input type="hidden" name="receiverPeerId" id="receiverPeerId">
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
 
 
     <script>
+        // Peer JS
+        const peer = new Peer();
+
+        // Create the peer and listen for incoming connections
+        peer.on('open', (id) => {
+            console.log('My peer ID is: ' + id);
+            document.getElementById('peerId').value = id;
+            // hit ajax api to update my peer id
+
+            // Make an AJAX request to update the peer ID in the backend
+            $.ajax({
+                url: '{{ route('update-peerid') }}', // Replace with the route to save the peer ID
+                type: 'POST',
+                data: {
+                    peer_id: id,
+                },
+                success: function(response) {
+                    console.log('Peer ID updated successfully');
+                },
+                error: function(error) {
+                    console.error('Error updating peer ID', error);
+                }
+            });
+        });
+
+        peer.on('call', (call) => {
+            const acceptCall = confirm('Incoming call, do you want to accept?');
+            if (acceptCall) {
+                call.answer(); // Answer the call
+                call.on('stream', (stream) => {
+                    // Show the video/audio stream to the user
+                    const audioElement = document.createElement('audio');
+                    audioElement.srcObject = stream;
+                    audioElement.play();
+                });
+            } else {
+                call.close(); // Reject the call
+            }
+        });
+
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -143,7 +186,7 @@
                     <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
 
                         @foreach ($users as $user)
-                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}"
+                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}" data-peer_id="{{ $user->peer_id }}"
                                 data-username="{{ $user->name }}"
                                 class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                                 <div class="flex items-center justify-center h-8 w-8 bg-pink-200 rounded-full">
@@ -288,9 +331,9 @@
         </div>
     </div>
 </div>`;
-            // if (JSON.parse(data.message).sent_by == loggedInUserId) {
-                $('#chat-row').append(sentHtml);
-            // }
+        // if (JSON.parse(data.message).sent_by == loggedInUserId) {
+        $('#chat-row').append(sentHtml);
+        // }
         let chatUserId = $("#chatUserId").val();
         console.log(chatUserId);
         $.ajax({
@@ -330,7 +373,8 @@
                 console.log(response.data);
                 if (response.data.sender == loggedInUserId || response.data.receiver ==
                     loggedInUserId) {
-                    makeCall();
+                        let receiverPeerId = $("#receiverPeerId").val();
+                    makeCall(receiverPeerId);
                 }
                 $("#call_id").val(response.data.id);
             },
@@ -369,6 +413,8 @@
         var chatUserName = $(this).data("username");
         $("#chatUserName").text(chatUserName)
         $("#receiver").val(userId);
+        var peerId = $(this).data("peer_id");
+        $("#receiverPeerId").val(peerId);
         $.ajax({
             url: '{{ route('loadMessages') }}',
             type: 'GET',
@@ -381,7 +427,6 @@
 
                 // Populate the new messages
                 response.data.forEach(function(message) {
-                    console.log(message)
                     if (message.sent_by == loggedInUserId) {
                         // Add sent message
                         chatRow.append(`

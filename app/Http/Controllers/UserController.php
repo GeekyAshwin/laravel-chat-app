@@ -9,6 +9,18 @@ use App\Models\Message;
 
 class UserController extends Controller
 {
+    public function updatePeerId(Request $request)
+    {
+        $peerId = $request->input('peer_id');
+        User::whereId(session('user_id'))->update([
+            'peer_id' => $peerId
+        ]);
+        return response()->json([
+            'message' => 'PeerId updated',
+            'status' => true
+        ]);
+    }
+
     public function login(Request $request)
     {
         $code = $request->input('login_code');

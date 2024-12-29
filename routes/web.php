@@ -24,6 +24,7 @@ Route::get('/', [ChatController::class, 'index']);
 Route::post('login', [UserController::class, 'login'])->name('login');
 Route::resource('/message', 'App\Http\Controllers\MessageController');
 Route::get('/user-messages', [MessageController::class, 'loadMessages'])->name('loadMessages');
+Route::post('/update-peerid', [UserController::class, 'updatePeerId'])->name('update-peerid');
 
 #Call Routes
 Route::post('make-call', [CallController::class, 'makeCall'])->name('make-call');

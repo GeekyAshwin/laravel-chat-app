@@ -19,9 +19,7 @@ class ChatController extends Controller
         $usersCacheKey = "users_except_{$currentUserId}";
 
         // Retrieve users from cache or database
-        $users = Cache::remember($usersCacheKey, now()->addMinutes(10), function () use ($currentUserId) {
-            return User::whereNot('id', $currentUserId)->get();
-        });
+        $users = User::whereNot('id', $currentUserId)->get();
 
         // Check if there are users available
         if ($users->isEmpty()) {
