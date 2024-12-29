@@ -24,10 +24,12 @@ class MessageController extends Controller
         $receivedMessages = Cache::get($receivedMessageKey);
         $messages = [];
         if ($sentMessages) {
-            $messages = array_merge($sentMessages->toArray(), $messages ) ;
+            $sentMessages = is_array($sentMessages) ?  $sentMessages : $sentMessages->toArray();
+            $messages = array_merge($sentMessages, $messages ) ;
         }
         if ($receivedMessages) {
-            $messages = array_merge($receivedMessages->toArray(), $messages ) ;
+            $receivedMessages = is_array($receivedMessages) ?  $receivedMessages : $receivedMessages->toArray();
+            $messages = array_merge($receivedMessages, $messages ) ;
         }
         if (!$messages) {
             $messages = Message::where([
@@ -40,6 +42,7 @@ class MessageController extends Controller
             Cache::put($sentMessageKey, $messages, now()->addMinutes(10));
         }
 
+        $messages =collect($messages)->sortBy('created_at')->values()->toArray();
         return response()->json([
             'data' => $messages
         ]);
