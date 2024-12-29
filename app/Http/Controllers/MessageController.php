@@ -6,6 +6,7 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Throwable;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Cache;
 
 class MessageController extends Controller
 {
@@ -15,24 +16,33 @@ class MessageController extends Controller
     public function loadMessages(Request $request)
     {
         $receiver = $request->input('receiver');
-        $messages = Message::where([
-            ['sent_by', '=', session('user_id')],
-            ['sent_to', '=', $receiver],
-        ])->orWhere([
-            ['sent_by', '=', $receiver],
-            ['sent_to', '=', session('user_id'),],
-        ])->get();
+        $userId = session('user_id');
+        $sentMessageKey = "conversation_{$userId}_{$receiver}";
+        $sentMessages = Cache::get($sentMessageKey);
+
+        $receivedMessageKey = "conversation_{$receiver}_{$userId}";
+        $receivedMessages = Cache::get($receivedMessageKey);
+        $messages = [];
+        if ($sentMessages) {
+            $messages = array_merge($sentMessages->toArray(), $messages ) ;
+        }
+        if ($receivedMessages) {
+            $messages = array_merge($receivedMessages->toArray(), $messages ) ;
+        }
+        if (!$messages) {
+            $messages = Message::where([
+                ['sent_by', '=', $userId],
+                ['sent_to', '=', $receiver],
+            ])->orWhere([
+                ['sent_by', '=', $receiver],
+                ['sent_to', '=', $userId],
+            ])->get();
+            Cache::put($sentMessageKey, $messages, now()->addMinutes(10));
+        }
+
         return response()->json([
             'data' => $messages
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -41,55 +51,29 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         try {
-            // dd(session()->all());
             $message = Message::create([
                 'sent_to' => $request->input('receiver'),
                 'sent_by' => session('user_id'),   //login user  id
                 'message' => $request->input('message'),
                 'has_attachment' => false
             ]);
+            $this->storeDataInRedis($request, $message);
             event(new MessageSent($message));
 
             return response()->json([
                 'message' => 'Message sent',
                 'data' => $message
             ]);
-
         } catch (Throwable $exception) {
             dd($exception);
-
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function storeDataInRedis(Request $request, $message)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $cacheKey = 'conversation_' . session('user_id') . '_' . $request->input('receiver');
+        $cachedMessages = Cache::get($cacheKey, []);
+        $cachedMessages[] = $message;
+        Cache::put($cacheKey, $cachedMessages, now()->addMinutes(10));
     }
 }
