@@ -26,13 +26,26 @@
                     <tr class="bg-gray-100 text-gray-700">
                         <th class="p-2 border border-gray-300">Employer</th>
                         <th class="p-2 border border-gray-300">Position</th>
-                        <th class="p-2 border border-gray-300">Manager</th>
+                        <th class="p-2 border border-gray-300">Occupation</th>
+                        <th class="p-2 border border-gray-300">Manager Name</th>
+                        <th class="p-2 border border-gray-300">Manager Email</th>
                         <th class="p-2 border border-gray-300">Actions</th>
                     </tr>
                 </thead>
+                @foreach ($employments as $employment)
                 <tbody id="employmentTable">
-                    <!-- Entries populated dynamically via AJAX -->
+                        <td class="p-2 border">{{ $employment->employer_name }}</td>
+                        <td class="p-2 border">{{ $employment->position }}</td>
+                        <td class="p-2 border">{{ $employment->occupation }}</td>
+                        <td class="p-2 border">{{ $employment->manager_name }}</td>
+                        <td class="p-2 border">{{ $employment->manager_email }}</td>
+                        <td class="p-2 border">
+                            <a href="/employment/{{ $employment->id }}/edit">Edit</a>
+                            <a id="deleteEmpBtn">Delete</a>
+                        </td>
+
                 </tbody>
+                @endforeach
             </table>
         </div>
     </div>

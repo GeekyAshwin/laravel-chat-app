@@ -14,50 +14,60 @@
     <div class="container mx-auto mt-10 max-w-4xl bg-white shadow-md rounded-lg p-6">
         <h2 class="text-2xl font-bold text-gray-700 mb-6">Add Employment</h2>
 
-        <form id="addEmploymentForm" action="/add-employment" method="POST" class="space-y-4">
+        <form id="addEmploymentForm" method="POST" class="space-y-4">
             @csrf
-            <!-- Employer Name -->
-            <div>
-                <label for="employer_name" class="block text-gray-600 font-medium">Employer Name</label>
-                <input type="text" id="employer_name" name="employer_name"
-                    class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+
+            <!-- Employment Fields -->
+            <div id="employmentFields">
+                <div class="employment-row" data-index="0">
+                    <h3 class="text-lg font-semibold text-gray-600">Employment #1</h3>
+
+                    <div>
+                        <label for="employment[0][employer_name]" class="block text-gray-600 font-medium">Employer
+                            Name</label>
+                        <input type="text" id="employment[0][employer_name]" name="employment[0][employer_name]"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="employment[0][position]" class="block text-gray-600 font-medium">Position</label>
+                        <input type="text" id="employment[0][position]" name="employment[0][position]"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="employment[0][occupation]"
+                            class="block text-gray-600 font-medium">Occupation</label>
+                        <input type="text" id="employment[0][occupation]" name="employment[0][occupation]"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="employment[0][manager_name]" class="block text-gray-600 font-medium">Manager
+                            Name</label>
+                        <input type="text" id="employment[0][manager_name]" name="employment[0][manager_name]"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="employment[0][manager_email]" class="block text-gray-600 font-medium">Manager
+                            Email</label>
+                        <input type="email" id="employment[0][manager_email]" name="employment[0][manager_email]"
+                            class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+                </div>
             </div>
 
-            <!-- Position -->
-            <div>
-                <label for="position" class="block text-gray-600 font-medium">Position</label>
-                <input type="text" id="position" name="position"
-                    class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-            </div>
-
-            <!-- Occupation -->
-            <div>
-                <label for="occupation" class="block text-gray-600 font-medium">Occupation</label>
-                <input type="text" id="occupation" name="occupation"
-                    class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-            </div>
-
-            <!-- Manager Name -->
-            <div>
-                <label for="manager_name" class="block text-gray-600 font-medium">Manager Name</label>
-                <input type="text" id="manager_name" name="manager_name"
-                    class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-            </div>
-
-            <!-- Manager Email -->
-            <div>
-                <label for="manager_email" class="block text-gray-600 font-medium">Manager Email</label>
-                <input type="email" id="manager_email" name="manager_email"
-                    class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-            </div>
 
             <!-- Buttons -->
             <div class="flex justify-end space-x-4">
-                <button type="button" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100">
-                    Cancel
+                <button type="button"
+                    class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+                    id="addEmploymentRow">
+                    Add Another Employment
                 </button>
                 <button type="submit" class="px-4 py-2 text-white bg-indigo-500 rounded-md hover:bg-indigo-600">
-                    Add Employment
+                    Submit Employment
                 </button>
             </div>
         </form>
@@ -74,32 +84,70 @@
         }
     });
 
+    // Dynamically add new employment rows
+    let employmentCount = 1; // Start with one employment row
+    $("#addEmploymentRow").click(function(e) {
+        e.preventDefault();
+
+        // Create a new employment row with the next index
+        const newRow = `
+    <div class="employment-row" data-index="${employmentCount}">
+        <h3 class="text-lg font-semibold text-gray-600">Employment #${employmentCount + 1}</h3>
+
+        <div>
+            <label for="employment[${employmentCount}][employer_name]" class="block text-gray-600 font-medium">Employer Name</label>
+            <input type="text" id="employment[${employmentCount}][employer_name]" name="employment[${employmentCount}][employer_name]"
+                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+
+        <div>
+            <label for="employment[${employmentCount}][position]" class="block text-gray-600 font-medium">Position</label>
+            <input type="text" id="employment[${employmentCount}][position]" name="employment[${employmentCount}][position]"
+                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+
+        <div>
+            <label for="employment[${employmentCount}][occupation]" class="block text-gray-600 font-medium">Occupation</label>
+            <input type="text" id="employment[${employmentCount}][occupation]" name="employment[${employmentCount}][occupation]"
+                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+
+        <div>
+            <label for="employment[${employmentCount}][manager_name]" class="block text-gray-600 font-medium">Manager Name</label>
+            <input type="text" id="employment[${employmentCount}][manager_name]" name="employment[${employmentCount}][manager_name]"
+                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+
+        <div>
+            <label for="employment[${employmentCount}][manager_email]" class="block text-gray-600 font-medium">Manager Email</label>
+            <input type="email" id="employment[${employmentCount}][manager_email]" name="employment[${employmentCount}][manager_email]"
+                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+        </div>
+    </div>
+`;
+
+
+        // Append the new row
+        $("#employmentFields").append(newRow);
+
+        // Increment the count for the next row
+        employmentCount++;
+    });
+
+    // Handle the form submission with AJAX
     $("#addEmploymentForm").submit(function(e) {
         e.preventDefault();
 
-        // Get the values from the input fields
-        const employerName = $('#employer_name').val();
-        const position = $('#position').val();
-        const occupation = $('#occupation').val();
-        const managerName = $('#manager_name').val();
-        const managerEmail = $('#manager_email').val();
+        const formData = $(this).serializeArray(); // Serialize the form data
+        console.log("Form Data: ", formData); // Log the form data to check
 
-        // Send the data via AJAX
         $.ajax({
-            url: '/add-employment',  // Adjust the URL for your endpoint
+            url: '/employment',
             type: 'POST',
-            data: {
-                employer_name: employerName,
-                position: position,
-                occupation: occupation,
-                manager_name: managerName,
-                manager_email: managerEmail
-            },
+            data: formData,
             success: function(response) {
-                console.log(response);
-                // Optional: Display a success message or reset the form
                 alert('Employment added successfully!');
-                $('#addEmploymentForm')[0].reset();
+                $('#addEmploymentForm')[0].reset(); // Reset the form
             },
             error: function(error) {
                 console.error(error);

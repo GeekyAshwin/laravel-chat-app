@@ -13,6 +13,8 @@
     {{-- <input type="hidden" name="sent_by" > --}}
     <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
     <input type="hidden" id="username" name="username" value="{{ session('username') }}">
+    <input type="hidden" id="cluster" name="cluster" value="{{ env('PUSHER_APP_CLUSTER') }}">
+    <input type="hidden" id="pusher_app_key" name="pusher_app_key" value="{{ env('PUSHER_APP_KEY') }}">
     <input type="hidden" id="call_id" name="call_id">
     <input type="hidden" name="peerId" id="peerId">
     <input type="hidden" name="receiverPeerId" id="receiverPeerId">
@@ -155,9 +157,11 @@
         async function endCall(receiverPeerId) {
 
         }
+        let pusherKey = $("#pusher_app_key").val();
+        let cluster = $("#cluster").val();
 
-        var pusher = new Pusher('f5fa53d5e2af981c1678', {
-            cluster: 'ap2',
+        var pusher = new Pusher(pusherKey, {
+            cluster: cluster,
             userTls: true,
         });
 
