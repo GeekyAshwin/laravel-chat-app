@@ -68,7 +68,7 @@ class MessageController extends Controller
                 'data' => $message
             ]);
         } catch (Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 

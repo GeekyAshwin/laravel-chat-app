@@ -8,6 +8,7 @@ use App\Events\Calls\CallInitiated;
 use App\Events\Calls\CallRejected;
 use Illuminate\Http\Request;
 use App\Models\Call;
+use Illuminate\Support\Facades\Log;
 
 class CallController extends Controller
 {
@@ -27,7 +28,7 @@ class CallController extends Controller
             ]);
 
         } catch (\Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 
@@ -44,7 +45,7 @@ class CallController extends Controller
             ]);
 
         } catch (\Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 
@@ -61,7 +62,7 @@ class CallController extends Controller
             ]);
 
         } catch (\Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 
@@ -78,7 +79,7 @@ class CallController extends Controller
             ]);
 
         } catch (\Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 
@@ -95,7 +96,7 @@ class CallController extends Controller
             ]);
 
         } catch (\Throwable $exception) {
-            dd($exception);
+           Log::error('Something went wrong' . $exception);
         }
     }
 
