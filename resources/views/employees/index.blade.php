@@ -34,10 +34,10 @@
                                 Edit
                             </a>
 
-                            <a id="deleteEmpBtn"
-                                class="px-4 m-2 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 flex items-center space-x-2">
+                            <button id="deleteEmpBtn" data-empId="{{ $employment->id }}"
+                                class="px-4 deleteEmpBtn m-2 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 flex items-center space-x-2">
                                 Delete
-                            </a>
+                            </button>
                         </td>
 
                     </tbody>
@@ -45,45 +45,35 @@
             </table>
         </div>
     </div>
-
-
     <script>
-        function fetchEmploymentHistory() {
-            $.ajax({
-                url: '/api/employments',
-                method: 'GET',
-                success: function(data) {
-                    let rows = '';
-                    data.forEach(entry => {
-                        rows += `
-                            <tr>
-                                <td class="p-2 border border-gray-300">${entry.employer}</td>
-                                <td class="p-2 border border-gray-300">${entry.position}</td>
-                                <td class="p-2 border border-gray-300">${entry.manager_name}</td>
-                                <td class="p-2 border border-gray-300">
-                                    <a href="/edit/${entry.id}" class="text-indigo-500 hover:underline">Edit</a>
-                                    <button data-id="${entry.id}" class="text-red-500 hover:underline delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                    $('#employmentTable').html(rows);
-                }
-            });
-        }
-
-        $(document).on('click', '.delete-btn', function() {
-            const id = $(this).data('id');
-            $.ajax({
-                url: `/api/employments/${id}`,
-                method: 'DELETE',
-                success: function() {
-                    fetchEmploymentHistory();
-                }
-            });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
 
-        // Initialize
-        $(document).ready(fetchEmploymentHistory);
+
+        $(".deleteEmpBtn").click(function(e) {
+            var empId = $(this).data("empid");
+            console.log(empId)
+            $.ajax({
+                url: '{{ route('employment.destroy', ':empId') }}'.replace(':empId',
+                    empId), // Replace the placeholder with the actual userId
+                type: 'DELETE',
+
+                success: function(response) {
+                    console.log(response);
+                    $("#message").val('');
+                    alert(response.message)
+                    window.location.href = '/employment'
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
+        });
     </script>
 @endsection
+

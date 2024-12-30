@@ -71,9 +71,9 @@ class EmploymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employment $employement)
+    public function destroy($employement)
     {
-        $employement->delete();
+        Employment::whereId($employement)->delete();
         return response()->json([
             'message' => 'Employment deleted'
         ]);
