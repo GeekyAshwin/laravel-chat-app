@@ -259,6 +259,12 @@
                             View Profile
                     </a>
                     </div>
+                    <div class="text-xs text-gray-500">
+                        <a id="viewEmployment" href="/employment"
+                            class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                            View Employement
+                    </a>
+                    </div>
                     <div class="flex flex-row items-center mt-3">
 
                         <button id="logout"

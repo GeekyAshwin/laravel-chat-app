@@ -13,9 +13,9 @@
     <div class="container mx-auto mt-10 max-w-4xl bg-white shadow-md rounded-lg p-6">
         <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-700">Employment History</h2>
-            <a href="/create"
+            <a href="/employment/create"
                 class="px-4 py-2 text-sm text-white bg-indigo-500 rounded-md hover:bg-indigo-600">
-                Add New Entry
+                Add Employment
             </a>
         </div>
 
