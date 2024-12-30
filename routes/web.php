@@ -5,7 +5,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CallController;
-
+use App\Http\Controllers\EmploymentController;
+use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,7 @@ Route::post('reject-call', [CallController::class, 'rejectCall'])->name('reject-
 Route::post('end-call', [CallController::class, 'endCall'])->name('end-call');
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 Route::get('invite-link/{chat_code}', [UserController::class, 'showChatPage']);
+
+#Profile Routes
+Route::resource('profile', UserProfileController::class)->only(['index', 'edit', 'update']);
+Route::resource('employment', EmploymentController::class);
