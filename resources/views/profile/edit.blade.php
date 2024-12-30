@@ -12,25 +12,25 @@
 
             <div>
                 <label for="name" class="block text-gray-600 font-medium">Full Name</label>
-                <input type="text" id="name" name="name" value="{{ $profile->name }}"
+                <input required type="text" id="name" name="name" value="{{ $profile->name }}"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
             </div>
 
             <div>
                 <label for="email" class="block text-gray-600 font-medium">Email</label>
-                <input type="email" id="email" name="email" value="{{ $profile->email }}"
+                <input required type="email" id="email" name="email" value="{{ $profile->email }}"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
             </div>
 
             <div>
                 <label for="phone" class="block text-gray-600 font-medium">Phone</label>
-                <input type="tel" id="phone" name="phone" value="{{ isset($profile->userProfile) ? $profile->userProfile->phone : '' }}"
+                <input required type="tel" id="phone" name="phone" value="{{ isset($profile->userProfile) ? $profile->userProfile->phone : '' }}"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
             </div>
 
             <div>
                 <label for="skills" class="block text-gray-600 font-medium">Skills</label>
-                <textarea id="skills" name="skills" rows="4"
+                <textarea required id="skills" name="skills" rows="4"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">{{ $profile->userProfile->skills }}</textarea>
             </div>
 
@@ -77,8 +77,7 @@
                 window.location.href = '/'
             },
             error: function(error) {
-                console.error(error);
-                alert(error);
+                alert('Unable to upload profile. Please check the image and other data');
             }
         });
 

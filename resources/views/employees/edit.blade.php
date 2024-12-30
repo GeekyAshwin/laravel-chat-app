@@ -9,31 +9,31 @@
             <input type="hidden" id="employment_id" value="{{ $employment->id }}">
             <div>
                 <label class="block text-gray-700 font-medium">Employer Name</label>
-                <input type="text" id="employer"
+                <input required type="text" id="employer"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                     value="{{ $employment->employer_name }}" required>
             </div>
             <div>
                 <label class="block text-gray-700 font-medium">Position</label>
-                <input type="text" id="position"
+                <input required type="text" id="position"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                     value="{{ $employment->position }}" required>
             </div>
             <div>
                 <label class="block text-gray-700 font-medium">Occupation</label>
-                <input type="text" id="occupation"
+                <input required type="text" id="occupation"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                     value="{{ $employment->occupation }}" required>
             </div>
             <div>
                 <label class="block text-gray-700 font-medium">Manager Name</label>
-                <input type="text" id="manager_name"
+                <input required type="text" id="manager_name"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                     value="{{ $employment->manager_name }}" required>
             </div>
             <div>
                 <label class="block text-gray-700 font-medium">Manager Email</label>
-                <input type="email" id="manager_email"
+                <input required type="email" id="manager_email"
                     class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                     value="{{ $employment->manager_email }}" required>
             </div>

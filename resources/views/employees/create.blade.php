@@ -14,34 +14,34 @@
                 <div>
                     <label for="employment[0][employer_name]" class="block text-gray-600 font-medium">Employer
                         Name</label>
-                    <input type="text" id="employment[0][employer_name]" name="employment[0][employer_name]"
+                    <input type="text" required id="employment[0][employer_name]" name="employment[0][employer_name]"
                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                 </div>
 
                 <div>
                     <label for="employment[0][position]" class="block text-gray-600 font-medium">Position</label>
-                    <input type="text" id="employment[0][position]" name="employment[0][position]"
+                    <input required type="text" id="employment[0][position]" name="employment[0][position]"
                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                 </div>
 
                 <div>
                     <label for="employment[0][occupation]"
                         class="block text-gray-600 font-medium">Occupation</label>
-                    <input type="text" id="employment[0][occupation]" name="employment[0][occupation]"
+                    <input required type="text" id="employment[0][occupation]" name="employment[0][occupation]"
                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                 </div>
 
                 <div>
                     <label for="employment[0][manager_name]" class="block text-gray-600 font-medium">Manager
                         Name</label>
-                    <input type="text" id="employment[0][manager_name]" name="employment[0][manager_name]"
+                    <input  required type="text" id="employment[0][manager_name]" name="employment[0][manager_name]"
                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                 </div>
 
                 <div>
                     <label for="employment[0][manager_email]" class="block text-gray-600 font-medium">Manager
                         Email</label>
-                    <input type="email" id="employment[0][manager_email]" name="employment[0][manager_email]"
+                    <input required type="email" id="employment[0][manager_email]" name="employment[0][manager_email]"
                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                 </div>
             </div>
@@ -82,31 +82,31 @@
 
         <div>
             <label for="employment[${employmentCount}][employer_name]" class="block text-gray-600 font-medium">Employer Name</label>
-            <input type="text" id="employment[${employmentCount}][employer_name]" name="employment[${employmentCount}][employer_name]"
+            <input required type="text" id="employment[${employmentCount}][employer_name]" name="employment[${employmentCount}][employer_name]"
                 class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
         </div>
 
         <div>
             <label for="employment[${employmentCount}][position]" class="block text-gray-600 font-medium">Position</label>
-            <input type="text" id="employment[${employmentCount}][position]" name="employment[${employmentCount}][position]"
+            <input required type="text" id="employment[${employmentCount}][position]" name="employment[${employmentCount}][position]"
                 class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
         </div>
 
         <div>
             <label for="employment[${employmentCount}][occupation]" class="block text-gray-600 font-medium">Occupation</label>
-            <input type="text" id="employment[${employmentCount}][occupation]" name="employment[${employmentCount}][occupation]"
+            <input required type="text" id="employment[${employmentCount}][occupation]" name="employment[${employmentCount}][occupation]"
                 class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
         </div>
 
         <div>
             <label for="employment[${employmentCount}][manager_name]" class="block text-gray-600 font-medium">Manager Name</label>
-            <input type="text" id="employment[${employmentCount}][manager_name]" name="employment[${employmentCount}][manager_name]"
+            <input required type="text" id="employment[${employmentCount}][manager_name]" name="employment[${employmentCount}][manager_name]"
                 class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
         </div>
 
         <div>
             <label for="employment[${employmentCount}][manager_email]" class="block text-gray-600 font-medium">Manager Email</label>
-            <input type="email" id="employment[${employmentCount}][manager_email]" name="employment[${employmentCount}][manager_email]"
+            <input required type="email" id="employment[${employmentCount}][manager_email]" name="employment[${employmentCount}][manager_email]"
                 class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400 focus:outline-none">
         </div>
     </div>
@@ -130,7 +130,7 @@
             data: formData,
             success: function(response) {
                 alert('Employment added successfully!');
-                $('#addEmploymentForm')[0].reset(); 
+                $('#addEmploymentForm')[0].reset();
             },
             error: function(error) {
                 console.error(error);

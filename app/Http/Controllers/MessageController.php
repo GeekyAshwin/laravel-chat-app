@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Throwable;
 use App\Events\MessageSent;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
