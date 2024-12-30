@@ -90,7 +90,7 @@
             success: function(response) {
                 $("#loginModal").addClass("hidden");
                 $("#callingStatus").text('Connected');
-                receiveCall($("#audioPlayer"));
+                receiveCall();
             },
             error: function(error) {
                 console.error(error);

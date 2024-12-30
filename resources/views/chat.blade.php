@@ -21,15 +21,12 @@
 
     <script>
         // Peer JS
-        const peer = new Peer();
+        var peer = new Peer();
 
         // Create the peer and listen for incoming connections
         peer.on('open', (id) => {
             console.log('My peer ID is: ' + id);
             document.getElementById('peerId').value = id;
-            // hit ajax api to update my peer id
-
-            // Make an AJAX request to update the peer ID in the backend
             $.ajax({
                 url: '{{ route('update-peerid') }}', // Replace with the route to save the peer ID
                 type: 'POST',
@@ -45,23 +42,119 @@
             });
         });
 
-        peer.on('call', (call) => {
-            const acceptCall = confirm('Incoming call, do you want to accept?');
-            if (acceptCall) {
-                call.answer(); // Answer the call
-                call.on('stream', (stream) => {
-                    // Show the video/audio stream to the user
-                    const audioElement = document.createElement('audio');
-                    audioElement.srcObject = stream;
-                    audioElement.play();
+        async function makeCall(receiverPeerId, callId) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                }); // Local stream
+
+                // Include metadata (e.g., call ID) when making the call
+                const callMetadata = {
+                    callId: callId,
+                    username: $("#username").val()
+                };
+                console.log(callMetadata)
+
+                // Make the call and send the local stream to the receiver
+                const call = peer.call(receiverPeerId, stream, {
+                    metadata: callMetadata
                 });
-            } else {
-                call.close(); // Reject the call
+                peer.connect(receiverPeerId);
+
+                console.log('Caller: Initiating call with peer ID: ' + receiverPeerId);
+
+                // On receiving remote stream from the receiver
+                call.on('stream', function(remoteStream) {
+                    console.log('Caller: Received remote stream 1');
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.srcObject = remoteStream; // Play the remote audio stream
+                    audioPlayer.play();
+                });
+
+                // Debugging errors on the caller's side
+                call.on('error', function(err) {
+                    console.error('Caller: Call Error:', err);
+                });
+
+            } catch (err) {
+                console.error('Error getting local stream on caller side:', err);
+            }
+        }
+
+
+        async function receiveCall() {
+            peer.on('call', async function(call) {
+                try {
+                    // //Run the wrapped code  after btn click
+                    // // wrap code start
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    }); // Local stream for answering the call
+
+                    // // Answer the call with the local audio stream
+                    call.answer(stream);
+
+                    // // On receiving remote stream from the caller
+                    call.on('stream', function(remoteStream) {
+                        console.log('Receiver: Received remote stream');
+                        const audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.srcObject = remoteStream; // Play the remote audio stream
+                        audioPlayer.play();
+                    });
+                    //wrap code end
+
+                    // Debugging errors on the receiver's side
+                    call.on('error', function(err) {
+                        console.error('Receiver: Call Error:', err);
+                    });
+
+                } catch (err) {
+                    console.error('Error getting local stream on receiver side:', err);
+                }
+            });
+        }
+
+        /// 1. open modal
+        /// 2. pass call id
+        /// 3. on click of receive btn trigger the event and remainign code
+
+        peer.on('call', async function(call) {
+            try {
+                console.log('Receiver: You received a call');
+                console.log('Receiver: Call metadata:', call.metadata); // Access call metadata
+                console.log('Receiver: Call ID:', call.metadata.callId); // Access the call ID
+
+                const callId = call.metadata.callId;
+                const callerName = call.metadata.username;
+
+                // $('#callModal').removeClass('hidden');
+                // $("#call_id").val(call.metadata.callId);
+                // console.log($('#callModal').length); // Should log 1 if the element exists
+                const isReceived = confirm(callerName + ' is calling you. Press ok to pickup.')
+                // //Run the wrapped code  after btn click
+
+                // // wrap code start
+
+                if (isReceived) {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    });
+                    call.answer(stream);
+                    call.on('stream', function(remoteStream) {
+                        console.log('Receiver: Received remote stream');
+                        const audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.srcObject = remoteStream; // Play the remote audio stream
+                        audioPlayer.play();
+                    });
+                }
+            } catch (err) {
+                console.error('Error getting local stream on receiver side:', err);
             }
         });
 
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+        async function endCall(receiverPeerId) {
+
+        }
 
         var pusher = new Pusher('f5fa53d5e2af981c1678', {
             cluster: 'ap2',
@@ -109,10 +202,10 @@
         var callChannel = pusher.subscribe('call');
         // Listen for call initiated created
         callChannel.bind('call-initiated', function(data) {
-            console.log(data.call)
-            $('#callModal').removeClass('hidden');
-            $("#call_id").val(data.call.id);
-            console.log($('#callModal').length); // Should log 1 if the element exists
+            // console.log(data.call)
+            // $('#callModal').removeClass('hidden');
+            // $("#call_id").val(data.call.id);
+            // console.log($('#callModal').length); // Should log 1 if the element exists
 
         });
 
@@ -186,8 +279,8 @@
                     <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
 
                         @foreach ($users as $user)
-                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}" data-peer_id="{{ $user->peer_id }}"
-                                data-username="{{ $user->name }}"
+                            <button id="user_{{ $user->id }}" data-receiver="{{ $user->id }}"
+                                data-peer_id="{{ $user->peer_id }}" data-username="{{ $user->name }}"
                                 class="user-chat flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                                 <div class="flex items-center justify-center h-8 w-8 bg-pink-200 rounded-full">
                                     {{ substr($user->name, 0, 1) }}
@@ -373,8 +466,9 @@
                 console.log(response.data);
                 if (response.data.sender == loggedInUserId || response.data.receiver ==
                     loggedInUserId) {
-                        let receiverPeerId = $("#receiverPeerId").val();
-                    makeCall(receiverPeerId);
+                    let receiverPeerId = $("#receiverPeerId").val();
+                    let callId = response.data.id
+                    makeCall(receiverPeerId, callId);
                 }
                 $("#call_id").val(response.data.id);
             },
