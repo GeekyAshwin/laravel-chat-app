@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.main')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-</head>
+@section('content')
 
-<body class="bg-gray-100">
     <div class="container mx-auto mt-10 max-w-4xl bg-white shadow-md rounded-lg p-6">
         <h2 class="text-2xl font-bold text-gray-700 mb-6">Edit Profile</h2>
 
-        <form id="updateProfileForm" action="/update-profile" method="POST" class="space-y-4">
+        <form id="updateProfileForm"  method="POST" class="space-y-4">
             @csrf
             <!-- Name -->
             <input type="hidden" id="user_id" name="user_id" value="{{ session('user_id') }}">
@@ -57,9 +49,7 @@
             </div>
         </form>
     </div>
-</body>
 
-</html>
 <script>
      // CSRF Token setup
      $.ajaxSetup({
@@ -100,3 +90,4 @@
 
     });
 </script>
+@endsection

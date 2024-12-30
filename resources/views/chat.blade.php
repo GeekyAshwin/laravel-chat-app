@@ -237,7 +237,9 @@
 <body>
     <div class="flex h-screen antialiased text-gray-800">
         <audio id="audioPlayer" class="mt-4 w-full hidden" controls></audio>
+
         <div class="flex flex-row h-full w-full overflow-x-hidden">
+
             <div class="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
                 <div class="flex flex-row items-center justify-center h-12 w-full">
                     <div class="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
