@@ -1,17 +1,12 @@
-<!-- Main Container -->
 <div id="callModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 hidden">
-    <!-- Modal Content -->
     <div class="bg-white rounded-lg shadow-lg w-96">
-      <!-- Header -->
       <div class="px-6 py-4 border-b border-gray-200 text-center">
         <h2 id="callingStatus" class="text-lg font-semibold text-gray-800">Calling...</h2>
         <p class="text-sm text-gray-600 mt-1">Username: <span id="callSender" class="font-semibold"></span></p>
       </div>
-      <!-- Body -->
       <div class="flex flex-col items-center justify-center px-6 py-8">
 
         <div class="flex justify-center gap-6">
-          <!-- End Call Button -->
           <button
             id="endCall"
             class="bg-red-500 hover:bg-red-600 text-white rounded-full p-4 shadow-lg focus:outline-none"
@@ -21,7 +16,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.994 12.126C6.333 10.444 7.121 8 9.004 8h6.001c1.883 0 2.671 2.444 2.01 4.126l-.39 1.028A2.994 2.994 0 0113.736 16H10.27a2.994 2.994 0 01-2.889-2.846l-.387-1.028z" />
             </svg>
           </button>
-          <!-- Receive Call Button -->
 
           <button
             id="receiveCall"
@@ -34,7 +28,6 @@
           </button>
         </div>
       </div>
-      <!-- Footer -->
       <div class="px-6 py-4 border-t border-gray-200 text-right">
         <button
           id="closeModal"
@@ -48,14 +41,12 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // CSRF Token setup
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    // $("#loginModal").addClass("hidden");
 
 
     $("#endCall").click(function (e) {

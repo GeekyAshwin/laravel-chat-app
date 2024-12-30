@@ -36,5 +36,6 @@ Route::post('logout', [UserController::class, 'logout'])->name('logout');
 Route::get('invite-link/{chat_code}', [UserController::class, 'showChatPage']);
 
 #Profile Routes
-Route::resource('profile', UserProfileController::class)->only(['index', 'edit', 'update']);
+Route::resource('profile', UserProfileController::class);
+Route::post('profile/{id}', [UserProfileController::class, 'update'])->name('profile.update');
 Route::resource('employment', EmploymentController::class);

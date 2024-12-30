@@ -7,7 +7,6 @@
     <form id="addEmploymentForm" method="POST" class="space-y-4">
         @csrf
 
-        <!-- Employment Fields -->
         <div id="employmentFields">
             <div class="employment-row" data-index="0">
                 <h3 class="text-lg font-semibold text-gray-600">Employment #1</h3>
@@ -49,7 +48,6 @@
         </div>
 
 
-        <!-- Buttons -->
         <div class="flex justify-end space-x-4">
             <button type="button"
                 class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -69,19 +67,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // CSRF Token setup
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    // Dynamically add new employment rows
     let employmentCount = 1; // Start with one employment row
     $("#addEmploymentRow").click(function(e) {
         e.preventDefault();
-
-        // Create a new employment row with the next index
         const newRow = `
     <div class="employment-row" data-index="${employmentCount}">
         <h3 class="text-lg font-semibold text-gray-600">Employment #${employmentCount + 1}</h3>
@@ -119,19 +113,16 @@
 `;
 
 
-        // Append the new row
         $("#employmentFields").append(newRow);
 
-        // Increment the count for the next row
         employmentCount++;
     });
 
-    // Handle the form submission with AJAX
     $("#addEmploymentForm").submit(function(e) {
         e.preventDefault();
 
-        const formData = $(this).serializeArray(); // Serialize the form data
-        console.log("Form Data: ", formData); // Log the form data to check
+        const formData = $(this).serializeArray();
+        console.log("Form Data: ", formData);
 
         $.ajax({
             url: '/employment',
@@ -139,7 +130,7 @@
             data: formData,
             success: function(response) {
                 alert('Employment added successfully!');
-                $('#addEmploymentForm')[0].reset(); // Reset the form
+                $('#addEmploymentForm')[0].reset(); 
             },
             error: function(error) {
                 console.error(error);

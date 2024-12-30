@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('phone')->nullable();
-            $table->text('skills')->nullable(); // Comma-separated skills
+            $table->text('skills')->nullable();
+            $table->text('profile_image')->nullable();
             $table->timestamps();
         });
     }

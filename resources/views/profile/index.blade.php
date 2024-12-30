@@ -11,16 +11,14 @@
     </div>
 
     <div class="mt-6 space-y-6">
-        <!-- Profile Picture -->
         <div class="flex items-center space-x-4">
-            <img src="https://via.placeholder.com/100" alt="Profile Picture"
+            <img src="{{ url('storage/') . '/' . $profile->userProfile->profile_image }}" alt="Profile Picture"
                 class="w-24 h-24 rounded-full border-2 border-indigo-500">
             <div>
                 <h3 class="text-xl font-semibold text-gray-800">{{ $profile->name }}</h3>
             </div>
         </div>
 
-        <!-- Profile Details -->
         <div class="border-t border-gray-300 pt-6">
             <h3 class="text-lg font-semibold text-gray-700">Personal Information</h3>
             <div class="mt-4 space-y-2">
@@ -42,7 +40,6 @@
             </div>
         </div>
 
-        <!-- Skills -->
         <div class="border-t border-gray-300 pt-6">
             <h3 class="text-lg font-semibold text-gray-700">Skills</h3>
             {{ $profile->userProfile->skills }}

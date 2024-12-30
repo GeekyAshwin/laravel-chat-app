@@ -1,4 +1,3 @@
-<!-- component -->
 <!doctype html>
 <html>
 

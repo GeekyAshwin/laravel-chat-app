@@ -18,6 +18,7 @@ class UpdateUserProfileRequest extends FormRequest
             'email' => ['required', 'email'],
             'phone' => ['numeric', 'digits:10', 'required'],
             'skills' => ['string', 'required', 'max:255'],
+            'profile_image' => ['nullable', 'file', 'mimes:png,jpg,jpeg']
         ];
     }
 }

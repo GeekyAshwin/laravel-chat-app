@@ -1,12 +1,8 @@
-<!-- Main Container -->
 <div id="loginModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
-    <!-- Modal Content -->
     <div class="bg-white rounded-lg shadow-lg w-96">
-        <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">Login</h2>
         </div>
-        <!-- Body -->
         <div class="px-6 py-4">
             <p class="text-gray-600 text-sm mb-4">Enter your login code to proceed:</p>
 
@@ -28,7 +24,6 @@
                 </button>
 
         </div>
-        <!-- Footer -->
         <div class="px-6 py-4 border-t border-gray-200 text-right">
             <button
                 id="closeModal"
@@ -40,14 +35,11 @@
     </div>
 </div>
 <script>
-    // CSRF Token setup
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
-    // $("#loginModal").addClass("hidden");
 
 
     $("#login").click(function (e) {

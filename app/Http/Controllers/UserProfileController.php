@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
 
 class UserProfileController extends Controller
@@ -38,9 +39,14 @@ class UserProfileController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
         ]);
+        $imageUrl = '';
+        if ($request->hasFile('profile_image')) {
+            $imageUrl = $request->file('profile_image')->store('profiles', 'public');
+        }
         $user->userProfile->update([
             'phone' => $request->input('phone'),
             'skills' => $request->input('skills'),
+            'profile_image' => $imageUrl
         ]);
         return response()->json([
             'message' => 'Profile updated',
