@@ -253,7 +253,12 @@
                             class="h-full w-full" />
                     </div>
                     <div class="text-sm font-semibold mt-2">{{ session('username') }}</div>
-                    <div class="text-xs text-gray-500">Lead UI/UX Designer</div>
+                    <div class="text-xs text-gray-500">
+                        <a id="viewProfileBtn" href="/profile"
+                            class="flex items-center m-1 justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                            View Profile
+                    </a>
+                    </div>
                     <div class="flex flex-row items-center mt-3">
 
                         <button id="logout"

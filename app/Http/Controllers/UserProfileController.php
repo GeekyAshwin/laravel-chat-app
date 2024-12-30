@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
 
 class UserProfileController extends Controller
 {
@@ -12,48 +14,37 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        return view('profile.index');
+        $profile = User::with('userProfile')->whereId(session('user_id'))->first();
+        return view('profile.index', compact('profile'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        $profile = UserProfile::whereId($id)->first();
+        $profile = User::with('userProfile')->whereId(session('user_id'))->first();
         return view('profile.edit', compact('profile'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserProfileRequest $request, string $id)
     {
-        //
+        $user = User::whereId($id)->first();
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+        ]);
+        $user->userProfile->update([
+            'phone' => $request->input('phone'),
+            'skills' => $request->input('skills'),
+        ]);
+        return response()->json([
+            'message' => 'Profile updated',
+            'data' => $user
+        ]);
     }
-
 }
