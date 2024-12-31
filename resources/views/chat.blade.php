@@ -203,6 +203,8 @@
             } else {
                 $('#chat-row').append(receivedHtml);
                 console.log('revied html printed')
+                const chatContainer = document.getElementById('chatBoxArea');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
 
@@ -341,7 +343,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="chatBoxArea" class="flex flex-col h-full overflow-x-auto mb-4">
+                    <div id="chatBoxArea" class="flex flex-col overflow-auto h-[500px] h-full overflow-x-auto mb-4">
                         <div class="flex flex-col h-full">
                             <div id="chat-row" class="grid grid-cols-12 gap-y-2">
                                 @foreach ($messages as $message)
@@ -456,6 +458,8 @@
         // if (JSON.parse(data.message).sent_by == loggedInUserId) {
         $('#chat-row').append(sentHtml);
         // }
+        const chatContainer = document.getElementById('chatBoxArea');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
         let chatUserId = $("#chatUserId").val();
         console.log(chatUserId);
         $.ajax({
@@ -593,5 +597,9 @@
             }
         });
         // console.log(userId)
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatContainer = document.getElementById('chatBoxArea');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
     });
 </script>
