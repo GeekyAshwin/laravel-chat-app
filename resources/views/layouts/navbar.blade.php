@@ -11,7 +11,6 @@
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
-                <div class="text-2xl font-bold text-indigo-600">Brand</div>
 
                 <div class="lg:hidden">
                     <button id="menu-btn" class="text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600">

@@ -23,7 +23,6 @@
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <div class="text-2xl font-bold text-indigo-600">
-                    <a href="{{ url('/') }}">Brand</a>
                 </div>
 
                 <div class="lg:hidden">

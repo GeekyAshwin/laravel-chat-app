@@ -39,6 +39,9 @@ class UserProfileController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
         ]);
+
+        session(['username' => $request->input('name')]);
+
         $imageUrl = '';
         if ($request->hasFile('profile_image')) {
             $imageUrl = $request->file('profile_image')->store('profiles', 'public');
@@ -48,6 +51,7 @@ class UserProfileController extends Controller
             'skills' => $request->input('skills'),
             'profile_image' => $imageUrl
         ]);
+        session(['profile_image' => $imageUrl]);
         return response()->json([
             'message' => 'Profile updated',
             'data' => $user
