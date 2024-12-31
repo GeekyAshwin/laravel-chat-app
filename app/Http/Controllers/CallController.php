@@ -20,6 +20,7 @@ class CallController extends Controller
                 'receiver' => $request->input('receiver'),
                 'status' => 'Initiated',
             ]);
+            $call->loadMissing('callReceiver', 'callSender');
             event(new CallInitiated($call));
 
             return response()->json([

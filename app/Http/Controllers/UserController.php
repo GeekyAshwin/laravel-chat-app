@@ -34,6 +34,7 @@ class UserController extends Controller
             session(['username' => $user->name]);
             session(['email' => $user->email]);
             session(['user_loggedin' => true]);
+            session(['chat_code' => $user->chat_code]);
 
             return response()->json([
                 'message' => 'Login Successfuly'
@@ -50,6 +51,7 @@ class UserController extends Controller
             session(['username' => $user->name]);
             session(['email' => $user->email]);
             session(['user_loggedin' => true]);
+            session(['chat_code' => $user->chat_code]);
         } else {
             $user = User::whereId(session('user_id'))->first();
         }

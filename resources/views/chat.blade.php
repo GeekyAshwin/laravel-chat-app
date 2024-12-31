@@ -16,7 +16,7 @@
     <input type="hidden" id="pusher_app_key" name="pusher_app_key" value="{{ env('PUSHER_APP_KEY') }}">
     <input type="hidden" id="call_id" name="call_id">
     <input type="hidden" name="peerId" id="peerId">
-    <input type="hidden" name="receiverPeerId" id="receiverPeerId">
+    <input type="hidden" name="receiverPeerId" id="receiverPeerId" value="{{ $users[0]->peer_id }}">
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
 
 
@@ -43,7 +43,7 @@
             });
         });
 
-        async function makeCall(receiverPeerId, callId) {
+        async function makeCall(receiverPeerId, callId, receiverName) {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true
@@ -70,6 +70,8 @@
                     const audioPlayer = document.getElementById('audioPlayer');
                     audioPlayer.srcObject = remoteStream; // Play the remote audio stream
                     audioPlayer.play();
+                    $("#callSender").text(receiverName);
+                    $("#callingStatus").text('Connected');
                 });
 
                 // Debugging errors on the caller's side
@@ -147,6 +149,11 @@
                         audioPlayer.srcObject = remoteStream; // Play the remote audio stream
                         audioPlayer.play();
                     });
+                    $("#call_id").val(callId);
+                    $('#receiveCall').addClass('hidden');
+                    $('#callModal').removeClass('hidden');
+                    $("#callingStatus").text('Connected');
+                    $("#callSender").text(callerName);
                 }
             } catch (err) {
                 console.error('Error getting local stream on receiver side:', err);
@@ -154,7 +161,8 @@
         });
 
         async function endCall(receiverPeerId) {
-
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.srcObject = null;
         }
         let pusherKey = $("#pusher_app_key").val();
         let cluster = $("#cluster").val();
@@ -215,7 +223,9 @@
         // Listen for call ended
         callChannel.bind('call-ended', function(data) {
             console.log(data)
-            console.log($('#callModal').length); // Should log 1 if the element exists
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.srcObject = null;
+            window.location.href = '/'
         });
 
         // Listen for call rejected
@@ -223,11 +233,14 @@
             console.log(data)
             $("#callModal").addClass("hidden");
             $("#callingStatus").text('Connecting....');
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.srcObject = null;
+            window.location.href = '/'
         });
 
         // Listen for call accepted
         callChannel.bind('call-accepted', function(data) {
-            console.log(data)
+            console.log('call accepted')
             $("#callingStatus").text('Connected');
         });
     </script>
@@ -318,7 +331,7 @@
                         </div>
                         <input type="hidden" id="receiver" value={{ $users[0]->id }}>
                         <div class="flex-grow ml-4">
-                            <div id="make-call" style="cursor: pointer;"
+                            <div id="make-call" style="cursor: pointer;" data-receiver="{{ $users[0]->name }}"
                                 class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="2" stroke="white" class="w-4 h-4">
@@ -465,9 +478,11 @@
 
     // Make a call
     $('#make-call').click(function(e) {
+        var receiverName = $(this).data("receiver");
         $('#callModal').removeClass('hidden');
         $('#receiveCall').addClass('hidden');
         $("#chatUserId").val($("#receiver").val())
+        $("#callSender").text(receiverName);
         let chatUserId = $("#chatUserId").val();
         console.log(chatUserId);
         console.log('called')
@@ -484,7 +499,9 @@
                     loggedInUserId) {
                     let receiverPeerId = $("#receiverPeerId").val();
                     let callId = response.data.id
-                    makeCall(receiverPeerId, callId);
+                    let receiverName = response.data.call_receiver.name;
+                    console.log(response.data, receiverName);
+                    makeCall(receiverPeerId, callId,receiverName);
                 }
                 $("#call_id").val(response.data.id);
             },

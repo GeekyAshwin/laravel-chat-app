@@ -44,7 +44,7 @@ class ProcessMessage implements ShouldQueue
             ]);
             DB::commit();
         } catch (Throwable $exception) {
-            Log::error('Message Archived Error' . $this->message);
+            Log::error('Message Archived Error' .  $exception);
         }
     }
 }

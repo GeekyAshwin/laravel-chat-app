@@ -13,7 +13,7 @@ class MessageSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i =1; $i <=10; $i++) {
+        for ($i =1; $i <=1000; $i++) {
             Message::create([
                 'sent_by' => 1,
                 'sent_to' => 2,

@@ -28,14 +28,7 @@
           </button>
         </div>
       </div>
-      <div class="px-6 py-4 border-t border-gray-200 text-right">
-        <button
-          id="closeModal"
-          class="text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
-        >
-          Cancel
-        </button>
-      </div>
+      
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -60,7 +53,10 @@
             },
             success: function(response) {
                 $("#callModal").addClass("hidden");
-                $("#callingStatus").text('Connecting....');
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.srcObject = null;
+                window.location.href = '/'
+
             },
             error: function(error) {
                 console.error(error);
